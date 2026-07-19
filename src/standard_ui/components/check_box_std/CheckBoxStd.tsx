@@ -13,16 +13,18 @@ type StylesCheckBoxStd =
 
 interface PropsCheckBoxStd 
 {
-    prText: string;
+    prText?: string;
     prIsChecked: boolean;
     prOnPress: () => any;
     prStyle?: StylesCheckBoxStd;
     prIsActive?: boolean;
+    prSizeCheck?: number;
+    prBorderRadiusCheck?: number;
 };
 
 const CheckBoxStd = memo(
 
-    function CheckBoxStd({ prText, prIsChecked, prOnPress, prStyle, prIsActive = true }: PropsCheckBoxStd)
+    function CheckBoxStd({ prText, prIsChecked, prOnPress, prStyle, prIsActive = true, prSizeCheck, prBorderRadiusCheck }: PropsCheckBoxStd)
     {
         // Acquire global theme.
         const { theme } = useTheme();
@@ -49,27 +51,34 @@ const CheckBoxStd = memo(
                 //     prIsChecked ? theme.std.checkBox.backgroundBoxSelInactive : theme.std.checkBox.backgroundBoxUnselInactive;
 
                 return { 
-                    ...styles.check, 
-                    backgroundColor: lBgColour
+                    borderRadius: prBorderRadiusCheck ? prBorderRadiusCheck : (2.3 * fontSizeN()) / 2,
+                    width: prSizeCheck ? prSizeCheck : 2.3 * fontSizeN(),
+                    height: prSizeCheck ? prSizeCheck : 2.3 * fontSizeN(),
+                    backgroundColor: lBgColour,
+                    justifyContent: "center", alignItems: "center"
                 };
             },
-            [ theme, prIsActive, prIsChecked ]
+            [ theme, prIsActive, prIsChecked, prSizeCheck, prBorderRadiusCheck ]
         );
 
         const lStyleCheck = useMemo<SxProps>(
             () =>
             {
-                return { fill: prIsActive ? theme.std.checkBox.border : theme.std.checkBox.borderInactive, fontSize: 2 * fontSizeN() };
+                return { fill: prIsActive ? theme.std.checkBox.border : theme.std.checkBox.borderInactive, fontSize: prSizeCheck ? prSizeCheck * 0.80 : 2 * fontSizeN() };
             },
-            [ theme, prIsActive ]
+            [ theme, prIsActive, prSizeCheck ]
         );
 
         return (
             <div style = { lStyleCon } onClick = { prOnPress }>
 
-                <div className = "hideScrollBar" style = { styles.conText }>
-                    <TextStd prText = { prText } prIsBold = { true } />
-                </div>
+                {
+                    prText && (
+                        <div className = "hideScrollBar" style = { styles.conText }>
+                            <TextStd prText = { prText } prIsBold = { true } />
+                        </div>
+                    )
+                }
 
                 <div style = { lStyleConCheck }>
                     {
@@ -111,8 +120,6 @@ const styles : { [ key: string ]: CSSProperties }=
     check:
     {
         flexShrink: 0,
-        width: 2.3 * fontSizeN(),
-        height: 2.3 * fontSizeN(),
         borderRadius: (2.3 * fontSizeN()) / 2,
         alignItems: "center",
         justifyContent: "center"

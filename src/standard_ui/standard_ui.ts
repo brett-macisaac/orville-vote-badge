@@ -8,7 +8,7 @@ import { spacingN, fontSizeN } from "./utils_ui";
 
 // Import Components.
 // import ButtonNextPageStd from "./components/button_next_page_std/ButtonNextPageStd";
-import ButtonStd, { StylesButtonStd } from "./components/button_std/ButtonStd";
+import ButtonStd, { StylesButtonStd, ButtonStdPressEvent } from "./components/button_std/ButtonStd";
 // import ButtonThemeStd from "./components/button_theme_std/ButtonThemeStd";
 import CheckBoxStd, { StylesCheckBoxStd } from "./components/check_box_std/CheckBoxStd";
 import ComboBoxStd, { StylesComboBoxStd } from "./components/combo_box_std/ComboBoxStd";
@@ -64,6 +64,6 @@ export {
 
 export type { 
     StylesPopUpStd, StylesButtonStd, StylesHeaderStd, StyleTextInputStd, StylesPageContainerStd, StylesNavBarStd,
-    IconFunc, PopUpProps, NavButtonProps, StylesComboBoxStd, StylesSliderStd, StylesCheckBoxStd, StylesContainerStd, 
+    ButtonStdPressEvent, IconFunc, PopUpProps, NavButtonProps, StylesComboBoxStd, StylesSliderStd, StylesCheckBoxStd, StylesContainerStd, 
     StyleTableStd, Theme, TableData, StylesCountLabelStd,
 };

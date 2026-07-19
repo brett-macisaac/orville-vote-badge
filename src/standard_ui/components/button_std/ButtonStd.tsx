@@ -17,7 +17,9 @@ type StylesButtonStd = {
     text?: React.CSSProperties;
 };
 
-type PressHandlerArgs<TItem> = [TItem] extends [undefined] ? [] : [ pItem: TItem ];
+type ButtonStdPressEvent = React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>;
+
+type PressHandlerArgs<TItem> = [TItem] extends [undefined] ? [ pEvent: ButtonStdPressEvent ] : [ pItem: TItem, pEvent: ButtonStdPressEvent ];
 
 type PressHandler<TItem> = (...pArgs: PressHandlerArgs<TItem>) => void;
 
@@ -61,12 +63,12 @@ type PropsButtonStd<TItem = undefined> = PropsButtonStdBase & (
 */
 type ButtonStdComponent = <TItem = undefined>(props: PropsButtonStd<TItem>) => React.JSX.Element;
 
-function getPressArgs<TItem>(pItemOnPress: TItem | undefined) : PressHandlerArgs<TItem>
+function getPressArgs<TItem>(pItemOnPress: TItem | undefined, pEvent: ButtonStdPressEvent) : PressHandlerArgs<TItem>
 {
     if (pItemOnPress === undefined)
-        return [] as PressHandlerArgs<TItem>;
+        return [ pEvent ] as PressHandlerArgs<TItem>;
 
-    return [ pItemOnPress ] as PressHandlerArgs<TItem>;
+    return [ pItemOnPress, pEvent ] as PressHandlerArgs<TItem>;
 }
 
 const ButtonStdInner = <TItem = undefined,>({ prIcon, prIconSize = 20, prIconColour = "", prIconLocation = 'U', prText = "", prIsBold = false, 
@@ -80,19 +82,16 @@ const ButtonStdInner = <TItem = undefined,>({ prIcon, prIconSize = 20, prIconCol
 
     const [ stIndexPressPrevious, setIndexPressPrevious ] = useState<number>(0);
 
-    const lPressArgs = useMemo<PressHandlerArgs<TItem>>(
-        () => getPressArgs(prItemOnPress),
-        [ prItemOnPress ]
-    );
-
     /*
     * The function that handles press events.
     */
     const lHandlePress = useCallback(
-        () => 
+        (pEvent: ButtonStdPressEvent) => 
         {
             if (!prIsActive)
                 return;
+
+            const lPressArgs = getPressArgs(prItemOnPress, pEvent);
 
             if (!prDoubleClick)
             {
@@ -135,7 +134,7 @@ const ButtonStdInner = <TItem = undefined,>({ prIcon, prIconSize = 20, prIconCol
 
             setIndexPressPrevious(lIndexPress);
         },
-        [ prOnPress, prOnSinglePress, prDoubleClick, prIsActive, lPressArgs ]
+        [ prOnPress, prOnSinglePress, prDoubleClick, prIsActive, prItemOnPress, stIndexPressPrevious, stPressTimes ]
     );
 
     // Determine the particular event to listen for.
@@ -280,11 +279,15 @@ function IconDirToFlexDir(pIconDir : Direction) : "row-reverse" | "column" | "ro
     return "column";
 }
 
-type PressFunctions = { onTouchStart?: () => void, onMouseDown?: () => void,  onClick?: () => void };
+type PressFunctions = {
+    onTouchStart?: React.TouchEventHandler<HTMLDivElement>;
+    onMouseDown?: React.MouseEventHandler<HTMLDivElement>;
+    onClick?: React.MouseEventHandler<HTMLDivElement>;
+};
 
-function getPressFunction(pIsOnDown : boolean, pHandler : () => void) : PressFunctions
+function getPressFunction(pIsOnDown : boolean, pHandler : (pEvent: ButtonStdPressEvent) => void) : PressFunctions
 {
-    let lPressFunctions : { onTouchStart?: () => void, onMouseDown?: () => void,  onClick?: () => void } = { };
+    let lPressFunctions : PressFunctions = { };
 
     if (pIsOnDown)
     {
@@ -315,4 +318,4 @@ function getPressFunction(pIsOnDown : boolean, pHandler : () => void) : PressFun
 
 export { ButtonStd as default, getPressFunction };
 
-export type { StylesButtonStd, PressFunctions }
+export type { StylesButtonStd, PressFunctions, ButtonStdPressEvent }
