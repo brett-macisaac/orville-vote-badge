@@ -184,7 +184,7 @@ function Home()
                 con: {
                     padding: 0,
                     borderRadius: 0,
-                    backgroundColor: stHighlightDownvoteSide ? "#FF0000" : "#CC0000",
+                    backgroundColor: stHighlightDownvoteSide ? "#FF0000" : "#A20000",
                     flexGrow: 1,
                     height: "100%",
                     position: "relative",
@@ -202,7 +202,7 @@ function Home()
                 con: {
                     padding: 0,
                     borderRadius: 0,
-                    backgroundColor: stHighlightUpvoteSide ? "#00FF00" : "#00CC00",
+                    backgroundColor: stHighlightUpvoteSide ? "#00FF00" : "#00A300",
                     flexGrow: 1,
                     height: "100%",
                     position: "relative"
