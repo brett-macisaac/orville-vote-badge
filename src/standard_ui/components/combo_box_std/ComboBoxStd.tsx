@@ -8,7 +8,6 @@ import TextStd from '../text_std/TextStd';
 import { useTheme } from "../../standard_ui";
 
 import "./ComboBoxStd.css";
-import { PlayerF7 } from "@/pages/flip_seven/types";
 
 type StylesComboBoxStd = {
     con?: React.CSSProperties,
