@@ -14,6 +14,8 @@ import { stylePageConNoPadding } from '@/utils/styles';
 
 import { isLocation, Location } from '@/types/Location';
 
+import { sounds } from '@/utils/sounds';
+
 import "./home.css";
 
 const gIconUpward : IconFunc = (pSize : number, pColour : string) =>
@@ -83,6 +85,18 @@ function Home()
         []
     );
 
+    const lPlaySound = useCallback(
+        async (pIsUpvote : boolean) =>
+        {
+            let lSoundObj = new Audio(pIsUpvote ? sounds.upvote1 : sounds.downvote);
+
+            lSoundObj.volume = 0.21
+
+            await lSoundObj.play();
+        },
+        []
+    );
+
     const onPressDownvoteSide = useCallback(
         (pEvent: ButtonStdPressEvent) =>
         {
@@ -97,7 +111,7 @@ function Home()
                 return;
             }
 
-            // todo: play sound.
+            lPlaySound(false);
 
             setHighlightDownvoteSide(true);
             
@@ -105,7 +119,7 @@ function Home()
 
             setCountDownvotes((prev) => { return ++prev; })
         },
-        [ stHighlightDownvoteSide, stSetTextLocation ]
+        [ stHighlightDownvoteSide, stSetTextLocation, lPlaySound ]
     );
 
     const onPressUpvoteSide = useCallback(
@@ -122,7 +136,7 @@ function Home()
                 return;
             }
 
-            // todo: play sound.
+            lPlaySound(true);
 
             setHighlightUpvoteSide(true);
 
@@ -130,7 +144,7 @@ function Home()
 
             setCountUpvotes((prev) => { return ++prev; })
         },
-        [ stHighlightUpvoteSide, stFontSize, stSetTextLocation ]
+        [ stHighlightUpvoteSide, stFontSize, stSetTextLocation, lPlaySound ]
     );
 
     const changeFontSize = useCallback(
