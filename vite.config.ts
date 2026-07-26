@@ -8,8 +8,8 @@ const gTesting : boolean = false;
 // The content of the app's manifest file.
 const manifest : Partial<ManifestOptions> = 
 {
-    short_name: "Grid Stacker",
-    name: "Grid Stacker",
+    short_name: "Orville Badge",
+    name: "Orville Badge",
     icons: 
     [
         {
@@ -24,7 +24,7 @@ const manifest : Partial<ManifestOptions> =
             purpose: "any maskable"
         }
     ],
-    start_url: gTesting ? "http://localhost:5173/" : "https://www.grid-stacker.com/",
+    start_url: gTesting ? "http://localhost:5173/" : "https://kind-rock-0b4ef7d10.7.azurestaticapps.net/",
     display: "standalone",
     theme_color: "#000000",
     background_color: "#000000"
