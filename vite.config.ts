@@ -26,8 +26,8 @@ const manifest : Partial<ManifestOptions> =
     ],
     start_url: gTesting ? "http://localhost:5173/" : "https://kind-rock-0b4ef7d10.7.azurestaticapps.net/",
     display: "standalone",
-    theme_color: "#00FF00",
-    background_color: "#00FF00"
+    theme_color: "#00A300",
+    background_color: "#00A300"
 }
 
 // https://vite.dev/config/
