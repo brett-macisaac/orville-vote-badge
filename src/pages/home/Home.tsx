@@ -96,6 +96,7 @@ function Home()
     const [ stSetWidthBox, setSetWidthBox ] = useState<boolean>(false);
     const [ stSetHeightBox, setSetHeightBox ] = useState<boolean>(false);
     const [ stSetChangeBy10, setSetChangeBy10 ] = useState<boolean>(false);
+    const [ stShowCheckBoxes, setShowCheckBoxes ] = useState<boolean>(true);
 
     const [ stLocationDownvoteCount, setLocationDownvoteCount ] = useState<Location>({ x: 0, y: 0 });
 
@@ -385,7 +386,7 @@ function Home()
         {
             return {
                 con: {
-                    padding: 2, borderRadius: 5, border: "none", width: 35, height: 35
+                    padding: 2, borderRadius: 5, border: "none", width: 35, height: 35,
                 }
             }
         },
@@ -454,105 +455,117 @@ function Home()
                     
                 </ButtonStd>
 
-                <div style = {{ position: "absolute", bottom: 0, left: 0, flexDirection: "column", rowGap: 12, alignItems: "center" }}>
-
+                <div style = {{ position: "absolute", top: 0, right: 0, flexDirection: "column", rowGap: 12, alignItems: "center" }}>
                     <CheckBoxStd
-                        prIsChecked = { stSetFontSize } prOnPress = { () => setSetFontSize(prev => !prev) }
+                        prIsChecked = { stShowCheckBoxes } prOnPress = { () => setShowCheckBoxes(prev => !prev) }
                         prStyle = {{ con: { borderWidth: 0, padding: 0 } }}
                         prSizeCheck = { 35 } prBorderRadiusCheck = { 5 }
                     />
+                </div>
 
-                    <CheckBoxStd
-                        prIsChecked = { stSetTextLocation } prOnPress = { () => setSetTextLocation(prev => !prev) }
-                        prStyle = {{ con: { borderWidth: 0, padding: 0 } }}
-                        prSizeCheck = { 35 } prBorderRadiusCheck = { 5 }
-                    />
+                {
+                    stShowCheckBoxes && (
+                        <div style = {{ position: "absolute", bottom: 0, left: 0, flexDirection: "column", rowGap: 12, alignItems: "center" }}>
 
-                    <CheckBoxStd
-                        prIsChecked = { stSetHeightBox } prOnPress = { () => { setSetHeightBox(prev => !prev); setSetWidthBox(false); } }
-                        prStyle = {{ con: { borderWidth: 0, padding: 0 } }}
-                        prSizeCheck = { 35 } prBorderRadiusCheck = { 5 }
-                    />
-
-                    <CheckBoxStd
-                        prIsChecked = { stSetWidthBox } prOnPress = { () => { setSetWidthBox(prev => !prev); setSetHeightBox(false); } }
-                        prStyle = {{ con: { borderWidth: 0, padding: 0 } }}
-                        prSizeCheck = { 35 } prBorderRadiusCheck = { 5 }
-                    />
-
-                    {
-                        (stSetHeightBox || stSetWidthBox) && (
-                            <>
-                                <ButtonStd
-                                    prIcon = { gIconSubtract }
-                                    prOnPress = { onPressDecreaseBoxDimension }
-                                    prStyles = { styleBtnFontSizeChange }
-                                />
-                                <ButtonStd
-                                    prIcon = { gIconAdd }
-                                    prOnPress = { onPressIncreaseBoxDimension }
-                                    prStyles = { styleBtnFontSizeChange }
-                                />
-                            </>
-                        )
-                    }
-
-                    {
-                        (stSetFontSize) && (
-                            <>
-                                <ButtonStd
-                                    prIcon = { gIconUpward }
-                                    prOnPress = { onPressIncreaseFontSize }
-                                    prStyles = { styleBtnFontSizeChange }
-                                />
-
-                                <ButtonStd
-                                    prIcon = { gIconDownward }
-                                    prOnPress = { onPressDecreaseFontSize }
-                                    prStyles = { styleBtnFontSizeChange }
-                                />
-                            </>
-                        )
-                    }
-
-                    {
-                        (stSetTextLocation) && (
-                            <>
-                                <ButtonStd
-                                    prIcon = { gIconUpward }
-                                    prOnPress = { () => onPressChangeBoxLocation("UP") }
-                                    prStyles = { styleBtnFontSizeChange }
-                                />
-                                <ButtonStd
-                                    prIcon = { gIconDownward }
-                                    prOnPress = { () => onPressChangeBoxLocation("DOWN") }
-                                    prStyles = { styleBtnFontSizeChange }
-                                />
-                                <ButtonStd
-                                    prIcon = { gIconLeft }
-                                    prOnPress = { () => onPressChangeBoxLocation("LEFT") }
-                                    prStyles = { styleBtnFontSizeChange }
-                                />
-                                <ButtonStd
-                                    prIcon = { gIconRight }
-                                    prOnPress = { () => onPressChangeBoxLocation("RIGHT") }
-                                    prStyles = { styleBtnFontSizeChange }
-                                />
-                            </>
-                        )
-                    }
-
-                    {
-                        (stSetWidthBox || stSetHeightBox || stSetTextLocation) && (
                             <CheckBoxStd
-                                prIsChecked = { stSetChangeBy10 } prOnPress = { () => setSetChangeBy10(prev => !prev) }
+                                prIsChecked = { stSetFontSize } prOnPress = { () => setSetFontSize(prev => !prev) }
                                 prStyle = {{ con: { borderWidth: 0, padding: 0 } }}
                                 prSizeCheck = { 35 } prBorderRadiusCheck = { 5 }
                             />
-                        )
-                    }
 
-                </div>
+                            <CheckBoxStd
+                                prIsChecked = { stSetTextLocation } prOnPress = { () => setSetTextLocation(prev => !prev) }
+                                prStyle = {{ con: { borderWidth: 0, padding: 0 } }}
+                                prSizeCheck = { 35 } prBorderRadiusCheck = { 5 }
+                            />
+
+                            <CheckBoxStd
+                                prIsChecked = { stSetHeightBox } prOnPress = { () => { setSetHeightBox(prev => !prev); setSetWidthBox(false); } }
+                                prStyle = {{ con: { borderWidth: 0, padding: 0 } }}
+                                prSizeCheck = { 35 } prBorderRadiusCheck = { 5 }
+                            />
+
+                            <CheckBoxStd
+                                prIsChecked = { stSetWidthBox } prOnPress = { () => { setSetWidthBox(prev => !prev); setSetHeightBox(false); } }
+                                prStyle = {{ con: { borderWidth: 0, padding: 0 } }}
+                                prSizeCheck = { 35 } prBorderRadiusCheck = { 5 }
+                            />
+
+                            {
+                                (stSetHeightBox || stSetWidthBox) && (
+                                    <>
+                                        <ButtonStd
+                                            prIcon = { gIconSubtract }
+                                            prOnPress = { onPressDecreaseBoxDimension }
+                                            prStyles = { styleBtnFontSizeChange }
+                                        />
+                                        <ButtonStd
+                                            prIcon = { gIconAdd }
+                                            prOnPress = { onPressIncreaseBoxDimension }
+                                            prStyles = { styleBtnFontSizeChange }
+                                        />
+                                    </>
+                                )
+                            }
+
+                            {
+                                (stSetFontSize) && (
+                                    <>
+                                        <ButtonStd
+                                            prIcon = { gIconUpward }
+                                            prOnPress = { onPressIncreaseFontSize }
+                                            prStyles = { styleBtnFontSizeChange }
+                                        />
+
+                                        <ButtonStd
+                                            prIcon = { gIconDownward }
+                                            prOnPress = { onPressDecreaseFontSize }
+                                            prStyles = { styleBtnFontSizeChange }
+                                        />
+                                    </>
+                                )
+                            }
+
+                            {
+                                (stSetTextLocation) && (
+                                    <>
+                                        <ButtonStd
+                                            prIcon = { gIconUpward }
+                                            prOnPress = { () => onPressChangeBoxLocation("UP") }
+                                            prStyles = { styleBtnFontSizeChange }
+                                        />
+                                        <ButtonStd
+                                            prIcon = { gIconDownward }
+                                            prOnPress = { () => onPressChangeBoxLocation("DOWN") }
+                                            prStyles = { styleBtnFontSizeChange }
+                                        />
+                                        <ButtonStd
+                                            prIcon = { gIconLeft }
+                                            prOnPress = { () => onPressChangeBoxLocation("LEFT") }
+                                            prStyles = { styleBtnFontSizeChange }
+                                        />
+                                        <ButtonStd
+                                            prIcon = { gIconRight }
+                                            prOnPress = { () => onPressChangeBoxLocation("RIGHT") }
+                                            prStyles = { styleBtnFontSizeChange }
+                                        />
+                                    </>
+                                )
+                            }
+
+                            {
+                                (stSetWidthBox || stSetHeightBox || stSetTextLocation) && (
+                                    <CheckBoxStd
+                                        prIsChecked = { stSetChangeBy10 } prOnPress = { () => setSetChangeBy10(prev => !prev) }
+                                        prStyle = {{ con: { borderWidth: 0, padding: 0 } }}
+                                        prSizeCheck = { 35 } prBorderRadiusCheck = { 5 }
+                                    />
+                                )
+                            }
+
+                        </div>
+                    )
+                }
 
             </div>
 
