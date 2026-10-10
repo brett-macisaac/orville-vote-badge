@@ -385,7 +385,7 @@ function Home()
         {
             return {
                 con: {
-                    padding: 2, borderRadius: 5, border: "none", width: 25, height: 25
+                    padding: 2, borderRadius: 5, border: "none", width: 35, height: 35
                 }
             }
         },
@@ -454,30 +454,30 @@ function Home()
                     
                 </ButtonStd>
 
-                <div style = {{ position: "absolute", bottom: 0, left: 0, flexDirection: "column", rowGap: 2, alignItems: "center" }}>
+                <div style = {{ position: "absolute", bottom: 0, left: 0, flexDirection: "column", rowGap: 12, alignItems: "center" }}>
 
                     <CheckBoxStd
                         prIsChecked = { stSetFontSize } prOnPress = { () => setSetFontSize(prev => !prev) }
                         prStyle = {{ con: { borderWidth: 0, padding: 0 } }}
-                        prSizeCheck = { 25 } prBorderRadiusCheck = { 5 }
+                        prSizeCheck = { 35 } prBorderRadiusCheck = { 5 }
                     />
 
                     <CheckBoxStd
                         prIsChecked = { stSetTextLocation } prOnPress = { () => setSetTextLocation(prev => !prev) }
                         prStyle = {{ con: { borderWidth: 0, padding: 0 } }}
-                        prSizeCheck = { 25 } prBorderRadiusCheck = { 5 }
+                        prSizeCheck = { 35 } prBorderRadiusCheck = { 5 }
                     />
 
                     <CheckBoxStd
                         prIsChecked = { stSetHeightBox } prOnPress = { () => { setSetHeightBox(prev => !prev); setSetWidthBox(false); } }
                         prStyle = {{ con: { borderWidth: 0, padding: 0 } }}
-                        prSizeCheck = { 25 } prBorderRadiusCheck = { 5 }
+                        prSizeCheck = { 35 } prBorderRadiusCheck = { 5 }
                     />
 
                     <CheckBoxStd
                         prIsChecked = { stSetWidthBox } prOnPress = { () => { setSetWidthBox(prev => !prev); setSetHeightBox(false); } }
                         prStyle = {{ con: { borderWidth: 0, padding: 0 } }}
-                        prSizeCheck = { 25 } prBorderRadiusCheck = { 5 }
+                        prSizeCheck = { 35 } prBorderRadiusCheck = { 5 }
                     />
 
                     {
@@ -547,7 +547,7 @@ function Home()
                             <CheckBoxStd
                                 prIsChecked = { stSetChangeBy10 } prOnPress = { () => setSetChangeBy10(prev => !prev) }
                                 prStyle = {{ con: { borderWidth: 0, padding: 0 } }}
-                                prSizeCheck = { 25 } prBorderRadiusCheck = { 5 }
+                                prSizeCheck = { 35 } prBorderRadiusCheck = { 5 }
                             />
                         )
                     }
