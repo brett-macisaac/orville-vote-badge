@@ -9,6 +9,10 @@ import {
 
 import ArrowUp from '@mui/icons-material/ArrowUpward';
 import ArrowDown from '@mui/icons-material/ArrowDownward';
+import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 
 import { stylePageConNoPadding } from '@/utils/styles';
 
@@ -26,6 +30,26 @@ const gIconUpward : IconFunc = (pSize : number, pColour : string) =>
 const gIconDownward : IconFunc = (pSize : number, pColour : string) =>
 {
     return <ArrowDown sx = {{ color: pColour, fontSize: pSize }} />
+};
+
+const gIconLeft : IconFunc = (pSize : number, pColour : string) =>
+{
+    return <ArrowLeftIcon sx = {{ color: pColour, fontSize: pSize }} />
+};
+
+const gIconRight : IconFunc = (pSize : number, pColour : string) =>
+{
+    return <ArrowRightIcon sx = {{ color: pColour, fontSize: pSize }} />
+};
+
+const gIconAdd : IconFunc = (pSize : number, pColour : string) =>
+{
+    return <AddIcon sx = {{ color: pColour, fontSize: pSize }} />
+};
+
+const gIconSubtract : IconFunc = (pSize : number, pColour : string) =>
+{
+    return <RemoveIcon sx = {{ color: pColour, fontSize: pSize }} />
 };
 
 const FONT_SIZE_MAX : number = 40;
@@ -50,6 +74,12 @@ function getPressLocation(pEvent: ButtonStdPressEvent) : Location
 const KEY_LOCAL_STORAGE_LOCATION_UPVOTE_COUNT : string = "LOCATION_UPVOTE_COUNT";
 const KEY_LOCAL_STORAGE_LOCATION_DOWNVOTE_COUNT : string = "LOCATION_DOWNVOTE_COUNT";
 const KEY_FONT_SIZE_COUNT : string = "FONT_SIZE_COUNT";
+const KEY_LOCAL_STORAGE_WIDTH_TEXT_BOX : string = "WIDTH_TEXT_BOX";
+const KEY_LOCAL_STORAGE_HEIGHT_TEXT_BOX : string = "HEIGHT_TEXT_BOX";
+
+type BADGE_SIDE = "UP_VOTE" | "DOWN_VOTE"
+
+type Direction = "UP" | "DOWN" | "LEFT" | "RIGHT";
 
 function Home() 
 {
@@ -61,11 +91,20 @@ function Home()
 
     const [ stFontSize, setFontSize ] = useState<number>(18);
 
+    const [ stSetFontSize, setSetFontSize ] = useState<boolean>(false);
     const [ stSetTextLocation, setSetTextLocation ] = useState<boolean>(false);
+    const [ stSetWidthBox, setSetWidthBox ] = useState<boolean>(false);
+    const [ stSetHeightBox, setSetHeightBox ] = useState<boolean>(false);
+    const [ stSetChangeBy10, setSetChangeBy10 ] = useState<boolean>(false);
 
     const [ stLocationDownvoteCount, setLocationDownvoteCount ] = useState<Location>({ x: 0, y: 0 });
 
     const [ stLocationUpvoteCount, setLocationUpvoteCount ] = useState<Location>({ x: 0, y: 0 });
+
+    const [ stWidthTextBox, setWidthTextBox ] = useState<number>(20);
+    const [ stHeightTextBox, setHeightTextBox ] = useState<number>(20);
+
+    const [ stLastSideClicked, setLastSideClicked ] = useState<BADGE_SIDE>("UP_VOTE");
 
     useEffect(
         () =>
@@ -81,8 +120,56 @@ function Home()
             setFontSize(
                 utils.getFromLocalStorageTyped(KEY_FONT_SIZE_COUNT, (pData : unknown): pData is number => Number.isFinite(pData)) || 17
             );
+
+            setWidthTextBox(
+                utils.getFromLocalStorageTyped(KEY_LOCAL_STORAGE_WIDTH_TEXT_BOX, (pData : unknown): pData is number => Number.isFinite(pData)) || 150
+            );
+
+            setHeightTextBox(
+                utils.getFromLocalStorageTyped(KEY_LOCAL_STORAGE_HEIGHT_TEXT_BOX, (pData : unknown): pData is number => Number.isFinite(pData)) || 35
+            );
         },
         []
+    );
+
+    useEffect(
+        () =>
+        {
+            utils.setInLocalStorage(KEY_FONT_SIZE_COUNT, stFontSize);
+        },
+        [ stFontSize ]
+    );
+
+    useEffect(
+        () =>
+        {
+            utils.setInLocalStorage(KEY_LOCAL_STORAGE_WIDTH_TEXT_BOX, stWidthTextBox);
+        },
+        [ stWidthTextBox ]
+    );
+
+    useEffect(
+        () =>
+        {
+            utils.setInLocalStorage(KEY_LOCAL_STORAGE_HEIGHT_TEXT_BOX, stHeightTextBox);
+        },
+        [ stHeightTextBox ]
+    );
+
+    useEffect(
+        () =>
+        {
+            utils.setInLocalStorage(KEY_LOCAL_STORAGE_LOCATION_UPVOTE_COUNT, stLocationUpvoteCount);
+        },
+        [ stLocationUpvoteCount ]
+    );
+
+    useEffect(
+        () =>
+        {
+            utils.setInLocalStorage(KEY_LOCAL_STORAGE_LOCATION_DOWNVOTE_COUNT, stLocationDownvoteCount);
+        },
+        [ stLocationDownvoteCount ]
     );
 
     const lPlaySound = useCallback(
@@ -100,16 +187,10 @@ function Home()
     const onPressDownvoteSide = useCallback(
         (pEvent: ButtonStdPressEvent) =>
         {
+            setLastSideClicked("DOWN_VOTE");
+
             if (stHighlightDownvoteSide)
                 return;
-
-            if (stSetTextLocation)
-            {
-                const lLoc : Location = getPressLocation(pEvent);
-                utils.setInLocalStorage(KEY_LOCAL_STORAGE_LOCATION_DOWNVOTE_COUNT, lLoc);
-                setLocationDownvoteCount(lLoc);
-                return;
-            }
 
             lPlaySound(false);
 
@@ -125,16 +206,10 @@ function Home()
     const onPressUpvoteSide = useCallback(
         (pEvent: ButtonStdPressEvent) =>
         {
+            setLastSideClicked("UP_VOTE");
+
             if (stHighlightUpvoteSide)
                 return;
-
-            if (stSetTextLocation)
-            {
-                const lLoc : Location = getPressLocation(pEvent);
-                utils.setInLocalStorage(KEY_LOCAL_STORAGE_LOCATION_UPVOTE_COUNT, lLoc);
-                setLocationUpvoteCount(lLoc);
-                return;
-            }
 
             lPlaySound(true);
 
@@ -160,8 +235,6 @@ function Home()
                         else
                             lFontSize = lFontSize == FONT_SIZE_MIN ? prev : prev - 1;
 
-                        utils.setInLocalStorage(KEY_FONT_SIZE_COUNT, lFontSize);
-
                         return lFontSize;
                     }
                 );
@@ -175,6 +248,101 @@ function Home()
 
     const onPressDecreaseFontSize = useCallback(
         () => { changeFontSize(false); }, [ changeFontSize ]
+    );
+
+    const onPressChangeBoxLocation = useCallback(
+        (pDirection : Direction) => 
+        { 
+            const lAmountToChange : number = stSetChangeBy10 ? 10 : 1;
+
+            const lMoveLocation = (pLocation : Location) : Location => 
+            {
+                const lLocation : Location = { x: pLocation.x, y: pLocation.y };
+
+                if (pDirection == "LEFT")
+                    lLocation.x += lAmountToChange;
+                else if (pDirection == "RIGHT")
+                    lLocation.x -= lAmountToChange;
+                else if (pDirection == "DOWN")
+                    lLocation.y += lAmountToChange;
+                else if (pDirection == "UP")
+                    lLocation.y -= lAmountToChange;
+
+                return lLocation;
+            }
+
+            if (stLastSideClicked == "UP_VOTE")
+            {
+                setLocationUpvoteCount(
+                    (prev) =>
+                    {
+                        return lMoveLocation(prev);
+                    }
+                );
+            }
+            else
+            {
+                setLocationDownvoteCount(
+                    (prev) =>
+                    {
+                        return lMoveLocation(prev);
+                    }
+                );
+            }
+        }, 
+        [ stLastSideClicked, stSetChangeBy10 ]
+    );
+
+    const onPressIncreaseBoxDimension = useCallback(
+        () => 
+        { 
+            const lAmountToIncrease : number = stSetChangeBy10 ? 10 : 1;
+
+            if (stSetHeightBox)
+            {
+                setHeightTextBox(
+                    prev => 
+                    {
+                        const lHeight : number = prev + lAmountToIncrease;
+
+                        setFontSize(lHeight / 2);
+
+                        return lHeight;
+                    }
+                );
+            }
+            else
+            {
+                setWidthTextBox(prev => prev + lAmountToIncrease);
+            }
+        }, 
+        [ stSetHeightBox, stSetChangeBy10 ]
+    );
+
+    const onPressDecreaseBoxDimension = useCallback(
+        () => 
+        { 
+            const lAmountToDecrease : number = stSetChangeBy10 ? 10 : 1;
+
+            if (stSetHeightBox)
+            {
+                setHeightTextBox(
+                    prev => 
+                    {
+                        const lHeight : number = prev - lAmountToDecrease;
+
+                        setFontSize(lHeight / 2);
+
+                        return lHeight;
+                    }
+                );
+            }
+            else
+            {
+                setWidthTextBox(prev => prev - lAmountToDecrease);
+            }
+        }, 
+        [ stSetHeightBox, stSetChangeBy10 ]
     );
 
     const styleDownvoteSide = useMemo<StylesButtonStd>(
@@ -229,10 +397,13 @@ function Home()
         {
             return {
                 color: "#000000", fontFamily: "arial", fontSize: stFontSize,
+                justifyContent: "center", alignItems: "center",
                 position: "absolute", top: stLocationDownvoteCount.y, right: stLocationDownvoteCount.x,
+                height: stHeightTextBox, width: stWidthTextBox, 
+                border: (stSetHeightBox || stSetWidthBox || stSetTextLocation) ? "1px solid white" : "none"
             }
         },
-        [ stFontSize, stLocationDownvoteCount ]
+        [ stFontSize, stLocationDownvoteCount, stWidthTextBox, stHeightTextBox, stSetHeightBox, stSetWidthBox, stSetTextLocation ]
     );
 
     const styleTextUpvotes = useMemo<CSSProperties>(
@@ -240,10 +411,13 @@ function Home()
         {
             return {
                 color: "#000000", fontFamily: "arial", fontSize: stFontSize,
+                justifyContent: "center", alignItems: "center",
                 position: "absolute", top: stLocationUpvoteCount.y, right: stLocationUpvoteCount.x, 
+                height: stHeightTextBox, width: stWidthTextBox, 
+                border: (stSetHeightBox || stSetWidthBox || stSetTextLocation) ? "1px solid white" : "none"
             }
         },
-        [ stHighlightUpvoteSide, stFontSize, stLocationUpvoteCount ]
+        [ stHighlightUpvoteSide, stFontSize, stLocationUpvoteCount, stWidthTextBox, stHeightTextBox, stSetHeightBox, stSetWidthBox, stSetTextLocation ]
     );
 
     return ( 
@@ -283,22 +457,100 @@ function Home()
                 <div style = {{ position: "absolute", bottom: 0, left: 0, flexDirection: "column", rowGap: 2, alignItems: "center" }}>
 
                     <CheckBoxStd
+                        prIsChecked = { stSetFontSize } prOnPress = { () => setSetFontSize(prev => !prev) }
+                        prStyle = {{ con: { borderWidth: 0, padding: 0 } }}
+                        prSizeCheck = { 25 } prBorderRadiusCheck = { 5 }
+                    />
+
+                    <CheckBoxStd
                         prIsChecked = { stSetTextLocation } prOnPress = { () => setSetTextLocation(prev => !prev) }
                         prStyle = {{ con: { borderWidth: 0, padding: 0 } }}
                         prSizeCheck = { 25 } prBorderRadiusCheck = { 5 }
                     />
 
-                    <ButtonStd
-                        prIcon = { gIconUpward }
-                        prOnPress = { onPressIncreaseFontSize }
-                        prStyles = { styleBtnFontSizeChange }
+                    <CheckBoxStd
+                        prIsChecked = { stSetHeightBox } prOnPress = { () => { setSetHeightBox(prev => !prev); setSetWidthBox(false); } }
+                        prStyle = {{ con: { borderWidth: 0, padding: 0 } }}
+                        prSizeCheck = { 25 } prBorderRadiusCheck = { 5 }
                     />
 
-                    <ButtonStd
-                        prIcon = { gIconDownward }
-                        prOnPress = { onPressDecreaseFontSize }
-                        prStyles = { styleBtnFontSizeChange }
+                    <CheckBoxStd
+                        prIsChecked = { stSetWidthBox } prOnPress = { () => { setSetWidthBox(prev => !prev); setSetHeightBox(false); } }
+                        prStyle = {{ con: { borderWidth: 0, padding: 0 } }}
+                        prSizeCheck = { 25 } prBorderRadiusCheck = { 5 }
                     />
+
+                    {
+                        (stSetHeightBox || stSetWidthBox) && (
+                            <>
+                                <ButtonStd
+                                    prIcon = { gIconSubtract }
+                                    prOnPress = { onPressDecreaseBoxDimension }
+                                    prStyles = { styleBtnFontSizeChange }
+                                />
+                                <ButtonStd
+                                    prIcon = { gIconAdd }
+                                    prOnPress = { onPressIncreaseBoxDimension }
+                                    prStyles = { styleBtnFontSizeChange }
+                                />
+                            </>
+                        )
+                    }
+
+                    {
+                        (stSetFontSize) && (
+                            <>
+                                <ButtonStd
+                                    prIcon = { gIconUpward }
+                                    prOnPress = { onPressIncreaseFontSize }
+                                    prStyles = { styleBtnFontSizeChange }
+                                />
+
+                                <ButtonStd
+                                    prIcon = { gIconDownward }
+                                    prOnPress = { onPressDecreaseFontSize }
+                                    prStyles = { styleBtnFontSizeChange }
+                                />
+                            </>
+                        )
+                    }
+
+                    {
+                        (stSetTextLocation) && (
+                            <>
+                                <ButtonStd
+                                    prIcon = { gIconUpward }
+                                    prOnPress = { () => onPressChangeBoxLocation("UP") }
+                                    prStyles = { styleBtnFontSizeChange }
+                                />
+                                <ButtonStd
+                                    prIcon = { gIconDownward }
+                                    prOnPress = { () => onPressChangeBoxLocation("DOWN") }
+                                    prStyles = { styleBtnFontSizeChange }
+                                />
+                                <ButtonStd
+                                    prIcon = { gIconLeft }
+                                    prOnPress = { () => onPressChangeBoxLocation("LEFT") }
+                                    prStyles = { styleBtnFontSizeChange }
+                                />
+                                <ButtonStd
+                                    prIcon = { gIconRight }
+                                    prOnPress = { () => onPressChangeBoxLocation("RIGHT") }
+                                    prStyles = { styleBtnFontSizeChange }
+                                />
+                            </>
+                        )
+                    }
+
+                    {
+                        (stSetWidthBox || stSetHeightBox || stSetTextLocation) && (
+                            <CheckBoxStd
+                                prIsChecked = { stSetChangeBy10 } prOnPress = { () => setSetChangeBy10(prev => !prev) }
+                                prStyle = {{ con: { borderWidth: 0, padding: 0 } }}
+                                prSizeCheck = { 25 } prBorderRadiusCheck = { 5 }
+                            />
+                        )
+                    }
 
                 </div>
 

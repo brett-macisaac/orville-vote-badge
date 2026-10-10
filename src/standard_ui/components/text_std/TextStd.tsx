@@ -39,7 +39,6 @@ function TextStd({ children, prRef, prText = "", prIsBold = false, prIsItalic = 
                 color: theme.std.text.color,
                 fontWeight: prIsBold ? 700 : 'normal', 
                 fontStyle: prIsItalic ? "italic" : "normal",
-                ...prStyle, 
                 writingMode: prIsVertical ? "vertical-lr" : "horizontal-tb",
                 textOrientation: prIsVertical ? "upright" : undefined,
                 letterSpacing: prIsVertical ? 4 : "normal",
@@ -51,6 +50,9 @@ function TextStd({ children, prRef, prText = "", prIsBold = false, prIsItalic = 
                 */
                   width: (prIsVertical && prUseVerticalWidthBugFix) ? "1.1em" : "",
                   boxSizing: (prIsVertical && prUseVerticalWidthBugFix) ? "content-box" : "border-box",
+
+                ...prStyle, 
+
             }
         },
         [ prStyle, theme, prIsBold, prIsItalic, prIsVertical ]
